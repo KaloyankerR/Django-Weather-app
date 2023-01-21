@@ -7,7 +7,10 @@ from .forms import CityForm
 # Create your views here.
 def index(request):
     url = 'https://api.openweathermap.org/data/2.5/weather?q={}&appid=b15f9fd26448fd72a810d6c7bfe7bb74&units=metric'
+    
     err_msg = ''
+    message = ''
+    message_class = ''
 
     if request.method == 'POST':
         form = CityForm(request.POST)
@@ -18,10 +21,20 @@ def index(request):
             
             if existing_city_count == 0:
                 r = requests.get(url.format(new_city)).json()
-                print(r)
-                form.save() 
+                
+                if r['cod'] == 200:
+                    form.save()
+                else:
+                    err_msg = 'City does not exist!' 
             else:
                 err_msg = 'City already exists in the database!'
+        
+        if err_msg:
+            message = err_msg
+            message_class= 'is-danger'
+        else:
+            message = 'City added successfully!'
+            message_class = 'is-success'
 
     form = CityForm()
     cities = City.objects.all()
@@ -38,5 +51,11 @@ def index(request):
         }
         cities_data.append(weather_data)
 
-    context = {'cities_data': cities_data, 'form': form}
+    context = {
+        'cities_data': cities_data, 
+        'form': form,
+        'message': message,
+        'message_class': message_class
+        }
+        
     return render(request, 'base/index.html', context)
