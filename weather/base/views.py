@@ -1,5 +1,5 @@
 import requests
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import City
 from .forms import CityForm
 
@@ -57,5 +57,10 @@ def index(request):
         'message': message,
         'message_class': message_class
         }
-        
+
     return render(request, 'base/index.html', context)
+
+
+def delete_city(request, city_name):
+    City.objects.get(name=city_name).delete()
+    return redirect('index')
