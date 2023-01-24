@@ -10,7 +10,7 @@ def index(request):
     message = ''
     message_class = ''
     api_key = 'ENTER YOUR API'
-    # api_key = 'b15f9fd26448fd72a810d6c7bfe7bb74'
+    
     
 
     if request.method == 'POST':
