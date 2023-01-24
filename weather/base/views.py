@@ -6,11 +6,12 @@ from .forms import CityForm
 
 # Create your views here.
 def index(request):
-    url = 'https://api.openweathermap.org/data/2.5/weather?q={}&appid=b15f9fd26448fd72a810d6c7bfe7bb74&units=metric'
-    
     err_msg = ''
     message = ''
     message_class = ''
+    api_key = 'ENTER YOUR API'
+    # api_key = 'b15f9fd26448fd72a810d6c7bfe7bb74'
+    
 
     if request.method == 'POST':
         form = CityForm(request.POST)
@@ -20,7 +21,7 @@ def index(request):
             existing_city_count = City.objects.filter(name=new_city).count()
             
             if existing_city_count == 0:
-                r = requests.get(url.format(new_city)).json()
+                r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={new_city}&appid={api_key}&units=metric').json()
                 
                 if r['cod'] == 200:
                     form.save()
@@ -41,7 +42,7 @@ def index(request):
     cities_data = []
 
     for city in cities:
-        r = requests.get(url.format(city)).json()
+        r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric').json()
 
         weather_data = {
             'city': city.name,
